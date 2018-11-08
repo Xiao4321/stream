@@ -1,0 +1,25 @@
+---
+title: "Data Mining Assignment II"
+author: Bryan Paget (100985788)
+output: pdf_document
+date: "2018-11-06"
+fig_caption: true
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = F, warning = F, error = F, message = F, dpi = 300, fig.dim = c(4,4), fig.align = 'center')
+library(tidyverse)
+library(ggplot2)
+set.seed(42)
+```
+
+# Abstract
+
+# Introduction
+
+# Theory
+
+# Implementation
+
+# Summary
