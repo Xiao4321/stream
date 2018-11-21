@@ -137,6 +137,9 @@ recluster(kmeans, sample)
 plot(kmeans, stream, type="both")
 ```
 
+
+
+
 # Implementation
 
 ## Preprocessing
@@ -147,6 +150,9 @@ plot(kmeans, stream, type="both")
 
 1. [Stream Mining a Review : Tool and
    Techniques](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8212816)
-2. [Stream Package from CRAN]()
-3. [Introduction to stream: An Extensible Framework for Data Stream Clustering Research with R]()
-4. Stream Data Mining: Platforms, Algorithms, Performance Evaluators and Research Trends
+2. [Introduction to stream: An Extensible Framework for Data Stream Clustering Research with R]()
+3. Stream Data Mining: Platforms, Algorithms, Performance Evaluators and Research Trends
+4. https://www.flickr.com/services/api/
+5. https://www.quora.com/What-is-meant-by-streaming-API
+6. stream R package
+7. quantmod R package
