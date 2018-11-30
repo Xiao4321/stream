@@ -199,7 +199,7 @@ while (i < 1000) {
 write_csv(my.stocks, "./my.stocks.csv")
 ```
 
-## Filtering a data stream
+# Demonstration 5: Filtering a Data Stream
 
 This ties in with the fact that the stream may be of uncountable cardinality and we are only interested in a very small subset that satisfy some criteria.
 
@@ -224,6 +224,8 @@ while (TRUE) {
 write_csv(interesting.points, "./interesting.points.csv")
 ```
 
+# Demonstartion 6: Standing Query (Running Mean)
+
 I will have R watch the stream, and record values at each time step.  I can ask R to record the average value for every (let's say) 40 points. That one thing we can do with a stream.
 
 ```{R, echo=T, eval=F}
@@ -237,6 +239,8 @@ while (TRUE) {
   Sys.sleep(time=15)
 }
 ```
+
+# Demonstartion 7: Standing Query (Max and Min Values)
 
 We can perform standing queries; we can ask `R` to keep track of the maximum or minimum values of the stock and update those values as new points become available.
 
@@ -254,7 +258,7 @@ while (TRUE) {
 }
 ```
 
-# Histogram to record number of recurrences of a specific element.
+# Demonstration 8: Markov Chain Histogram
 
 We can make a markov chain for a finite alphabet and we can generate a histogram for each letter.
 
@@ -284,7 +288,8 @@ for (i in 1:10000) {
   Sys.sleep(1)
 }
 ```
-# Demonstration Finance
+
+# Demonstration 9: Financial Application
 
 ```{R, eval=F}
 if (!file.exists("./hist.png")) {
@@ -331,7 +336,7 @@ write_csv(sample, path="./sample.csv")
 }
 ```
 
-## Animated Demo of Stream
+## Animated Demo of Financial Stream
 
 To demonstrate stream clustering, we'll want to pick out some stocks that are different from each other.
 
@@ -341,15 +346,6 @@ reset.stream <- function(Variable)
   DSD_Memory(ordered %>% select(Date, Variable), class=ordered$`Company Name`)
 }
 
-sample <- read_csv("./sample.csv")
-ordered <- sample[order(sample$Date),] %>% 
-  mutate(`Company Name` = as.factor(`Company Name`))
-simulated.stream <- reset.stream("Close")
-```
-
-## Animated Demo of Stream
-
-```{R, echo=T, eval=F}
 make.animation <- function(Variable, df)
 {
   i <- 1
@@ -360,6 +356,11 @@ make.animation <- function(Variable, df)
     points(x=my.points$Date, y=my.points[[Variable]], col=my.points$`Company Name`)
   }
 }
+sample <- read_csv("./sample.csv")
+ordered <- sample[order(sample$Date),] %>% 
+  mutate(`Company Name` = as.factor(`Company Name`))
+simulated.stream <- reset.stream("Close")
+
 make.animation("Close", ordered)
 
 simulated.stream <- reset.stream("Close")
@@ -369,8 +370,9 @@ animate_data(simulated.stream, horizon = 9, n = 3201*9, wait = .1, plot.args = l
 ![GIF animate]("./Animations/gauss.gif")
 
 From the large, concatenated dataset, we can create a simulated data stream and use the kmeans algorithm built into `streams`.
-## TODO : find the labels of the points that belong to the clusters.
+
 ```{R, echo=T, eval=F}
+## TODO : find the labels of the points that belong to the clusters.
 stream <- reset.stream("Close")
 kmeans <- DSC_Kmeans(k=2)
 assignments <- c()
@@ -386,7 +388,7 @@ for (i in 1:100) {
 }
 ```
 
-# Offline Analysis of Stock Market Data
+## Offline Analysis of Stock Market Data
 
 ```{R}
 library(dplyr)
@@ -398,7 +400,7 @@ library(rowr)
 library(fpc)
 ```
 
-# Add a new column called clustname, which shows the each stock's cluster.
+### Add a new column called clustname, which shows the each stock's cluster.
 
 ```{R}
 sample <- read_csv("./sample.csv")
@@ -411,7 +413,7 @@ sample.slct$clustname<-kms$cluster
 sample$clustname=kms$cluster
 ```
 
-####Summarize data based on cluster
+### Summarize data based on cluster
 
 ```{r}
 summary.clust <- sample %>% 
@@ -420,7 +422,7 @@ summary.clust <- sample %>%
 summary.clust
 ```
 
-####Plot the difference value against close price, which seperated by 5 clusters.
+### Plot the difference value against close price, which seperated by 5 clusters.
 
 ```{r}
 plot(sample.slct$'Difference Value', sample.slct$Close, col = sample.slct$clustname)
@@ -434,7 +436,7 @@ ggplot(data=sample,aes(y=Close,x=`Difference Value`,color=clustname)) +
   facet_grid(clustname~., scale="free") 
 ```
 
-####Plot the difference value against close price of each company
+### Plot the difference value against close price of each company
 
 ```{r}
 
@@ -443,8 +445,7 @@ ggplot(data=sample,aes(y=Close,x=Open,color=`Company Name`)) +
   facet_grid(`Company Name`~., scale="free") 
 ```
 
-
-####Plot the difference value against close price of companies in cluster 1
+### Plot the difference value against close price of companies in cluster 1
 
 ```{r}
 clust1=filter(sample, clustname=="1")
@@ -454,8 +455,7 @@ ggplot(data=clust1,aes(y=Close,x=Open,color=`Company Name`)) +
 
 ```
 
-####Time series
-
+### Time series
 
 ```{r}
 close=select(sample, Date, Close,`Company Name`)
@@ -479,7 +479,7 @@ plot(nvr$Date,nvr$Close,type="l")
 
 ```
 
-####Plot correlation
+### Plot correlation
 
 The correlation coefficient is used to measure both the degree and direction of the correlation
 between any two stocks. It ranges from -1 and 1. It will hedge your bets by selecting stocks with a negative coefficient so that if one stock fails, the other is likely to get a boost. When stocks have a correlation coefficient of 0,it means that they are as likely to move differently as they are to move together, making them unpredictable. However, this also means there is less likelihood that
@@ -499,7 +499,7 @@ plotcluster(cor_matrix, clustcor$cluster)
 ```
 
 
-#### Fiting data with 3rd polynomial function
+### Fiting data with 3rd polynomial function
 
 ```{r}
 abio=filter(close,`Company Name`=="abio")%>%
@@ -516,7 +516,6 @@ p <-ggplot(abio, aes(x=abio$Date, y=abio$Close)) +
 
 p
 ```
-
 
 # Summary
 
