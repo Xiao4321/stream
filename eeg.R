@@ -19,46 +19,29 @@ names(data.list) <- "1":"9"
 df <- as.tibble(data.list)
 
 mean(df$`1`)
-mean(df$`2`)
 mean(df$`9`)
 
-km.df <- as.tibble(list("eeg1"=df$`1`, "eeg2"=df$`2`, "eeg3"=df$`9`))
+km.df <- as.tibble(list("eeg1"=df$`1`, "eeg9"=df$`9`))
 
 x <- 1:4097
-plot(x=x, y=km.df$eeg3)
+plot(x=x, y=km.df$eeg9)
 
-km <- kmeans(km.df, centers=3, iter.max=10000)
+plot(x=x, y=km.df$eeg1)
 
-plot(km.df, col=km$cluster)
-
-plot(km.df$eeg1)
-plot(km.df$eeg2)
-plot(km.df$eeg3)
+km <- kmeans(km.df, centers=2, iter.max=10000)
 
 hist(km.df$eeg1)
-hist(km.df$eeg2)
-hist(km.df$eeg3)
-
-## Terrible:
-data.stream.candidate <- unlist(data)
-km <- kmeans(data.stream.candidate, centers=3)
-plot(x=1:length(data.stream.candidate), y=data.stream.candidate, col=km$cluster)
-## End Terrible
-
-## TODO : Have three simultaneous streams...
-
-## Try a simulated version and then the real version.
-stream <- DSD_Gaussians(k=3, d=1, mu=unlist(lapply(km.df, mean)), noise=1)
+hist(km.df$eeg9)
 
 ## Real version
 stream <- DSD_Memory(km.df)
 
-sample <- DSC_Sample(k=3)
+sample <- DSC_Sample(k=2)
 update(sample, stream, 96)
-sample
-
-kmeans <- DSC_Kmeans(k=3)
+kmeans <- DSC_Kmeans(k=2)
 recluster(kmeans, sample)
 plot(kmeans, stream, type="both")
 
-animate_cluster(kmeans, stream, horizon=102, n=4097*3)
+birch <- DSC_BIRCH(treshold = .1, branching = 8, maxLeaf = 20)
+
+animate_cluster(birch, km.df, horizon=102, n=4097*3)
