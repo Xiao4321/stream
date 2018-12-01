@@ -111,7 +111,7 @@ Use conventional clustering algorithm by regarding micro-clusters as pseudo-poin
 
 # Demonstration 1: Clustering Mixture of Gaussian Distributions
 
-We worked extensively with the `stream` package from `CRAN`.
+We worked extensively with the `stream` package from `CRAN`.  The package constains classes for instantiating objects of type `Data Stream Data` and `Data Stream Clusterer`.  The package provides classes for generating synthetic data streams, including `DSD_Gaussian` which creates an object representing an infinite length Gaussian process, from which one can draw samples.  The following code demonstrates the generation of a Gaussian mixture model containing.
 
 ```{R eval=F, echo=T}
 stream <- DSD_Gaussians(k=3, noise=0)
@@ -157,7 +157,7 @@ while (TRUE) {
 
 
 # Demonstration 3: Saving Streaming Data for Offline Use
-
+-- Archiving.
 Many data-centric businesses offer APIs to access their data. Twitter for
 instance has an API, but one must request access to the API. We applied for
 access, but have not heard back from Twitter. We then decided to go with the `R`
@@ -224,7 +224,7 @@ while (TRUE) {
 write_csv(interesting.points, "./interesting.points.csv")
 ```
 
-# Demonstartion 6: Standing Query (Running Mean)
+# Demonstartion 6: Standing Query (Running Mean, Max, and Min)
 
 I will have R watch the stream, and record values at each time step.  I can ask R to record the average value for every (let's say) 40 points. That one thing we can do with a stream.
 
@@ -240,7 +240,7 @@ while (TRUE) {
 }
 ```
 
-# Demonstartion 7: Standing Query (Max and Min Values)
+## Max and Min Values
 
 We can perform standing queries; we can ask `R` to keep track of the maximum or minimum values of the stock and update those values as new points become available.
 
@@ -263,7 +263,8 @@ while (TRUE) {
 We can make a markov chain for a finite alphabet and we can generate a histogram for each letter.
 
 TODO : Estimating moments?
-
+TODO : observing evolution of distribion.
+TODO : Speed up.
 ```{R echo=T, eval=F}
 letters <- c("A", "C", "G", "T")
 A <- matrix(c(0.4, 0.3, 0.2, 0.1, 
@@ -292,6 +293,8 @@ for (i in 1:10000) {
 # Demonstration 9: Financial Application
 
 ```{R, eval=F}
+## TODO : get the cluster labels from the online kmeans, based on the online clustering we do some offline analysis.
+## TODO : Take a closer look at Shine's work.
 if (!file.exists("./hist.png")) {
   files <- list.files("./Data/Big/Stocks/")
   sizes <- list()
@@ -373,6 +376,8 @@ From the large, concatenated dataset, we can create a simulated data stream and 
 
 ```{R, echo=T, eval=F}
 ## TODO : find the labels of the points that belong to the clusters.
+## TODO : This is broken,
+## TODO : make sure the gifs are big.
 stream <- reset.stream("Close")
 kmeans <- DSC_Kmeans(k=2)
 assignments <- c()
@@ -411,6 +416,7 @@ head(sample.slct)
 kms=kmeans(sample.slct %>% select(Close,`Difference Value`), center=5)
 sample.slct$clustname<-kms$cluster 
 sample$clustname=kms$cluster
+## TODO : we have companies grouped into different clusters.  Maybe remove this?  We can also try collapsing the instances into means, so we have only one row for one company.
 ```
 
 ### Summarize data based on cluster
@@ -419,7 +425,7 @@ sample$clustname=kms$cluster
 summary.clust <- sample %>% 
   group_by(clustname) %>% 
   summarize(closemean=mean(Close,na.rm = T),diffmean=mean(`Difference Day`), volumemean=mean(Volume))
-summary.clust
+summary.clust %>% kable()
 ```
 
 ### Plot the difference value against close price, which seperated by 5 clusters.
@@ -439,7 +445,6 @@ ggplot(data=sample,aes(y=Close,x=`Difference Value`,color=clustname)) +
 ### Plot the difference value against close price of each company
 
 ```{r}
-
 ggplot(data=sample,aes(y=Close,x=Open,color=`Company Name`)) +
   geom_point() +
   facet_grid(`Company Name`~., scale="free") 
@@ -458,6 +463,8 @@ ggplot(data=clust1,aes(y=Close,x=Open,color=`Company Name`)) +
 ### Time series
 
 ```{r}
+## NOTE : Just a plot of the time series, just for flavour.
+## TODO : Can we plot all in one?  
 close=select(sample, Date, Close,`Company Name`)
 head(close)
 abio=filter(close,`Company Name`=="abio")#1 cluster
@@ -488,6 +495,7 @@ many noncorrelated stocks will fail simultaneously.
 Choosing a variety of stocks with different degrees and directions of correlation is one of the most common and effective diversification strategies. The result is a portfolio that displays a general upward trend, since, at any given time, at least one security should be doing well even if others are failing.
 
 ```{r}
+## TODO : There are 3 points but there should be 9.
 new=data.frame(abio$Close,bh$Close,crs$Close,ghc$Close,nvr$Close,scon$Close,sgy$Close,svra$Close,tdw$Close)
 head(new)
 cor_matrix = cor(new)
@@ -525,10 +533,8 @@ p
    Techniques](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8212816)
 2. [Introduction to stream: An Extensible Framework for Data Stream Clustering Research with R]()
 3. Stream Data Mining: Platforms, Algorithms, Performance Evaluators and Research Trends
-4. https://www.flickr.com/services/api/
 5. https://www.quora.com/What-is-meant-by-streaming-API
 6. stream R package
 7. quantmod R package
 8. https://moa.cms.waikato.ac.nz/datasets/
-9. https://github.com/vlosing/driftDatasets
-10. http://statisticalrecipes.blogspot.com/2013/01/easy-introduction-to-markov-chains-in-r.html
+9. [Cool Datasets](https://github.com/vlosing/driftDatasets)
